@@ -2,10 +2,20 @@ package hello.hellospring.service;
 
 import hello.hellospring.domain.Member;
 import hello.hellospring.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+    /*
+     @Service 어노테이션을 적용하면
+     스프링이 실행될 때 스프링 컨테이너가 만들어지는데
+     @Service 어노테이션이 있으면 이 MemberService를
+     스프링 컨테이너에 등록한다.
+     그리고 Spring에서 스프링 컨테이너를 관리를 한다.
+     => 스프링 컨테이너에서 스프링 빈이 관리 된다.
+     */
 public class MemberService {
 
     private final MemberRepository memberRepository;
