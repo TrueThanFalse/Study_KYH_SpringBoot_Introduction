@@ -1,8 +1,15 @@
 package hello.hellospring.controller;
 
+import hello.hellospring.domain.Member;
+import hello.hellospring.domain.MemberForm;
 import hello.hellospring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 /*
 < 스프링 빈을 등록하는 2가지 방법 >
@@ -69,4 +76,32 @@ public class MemberController {
     컴포넌트 스캔을 사용한다. 그리고 정형화 되지 않거나,
     상황에 따라 구현 클래스를 변경해야 하면 설정을 통해 스프링 빈으로 등록한다.
      */
+
+    @GetMapping("/members/new")
+    public String createForm() {
+        return "members/createMemberForm";
+    }
+
+    /*
+    1. createMemberForm.html의 form 태그에서 post 방식으로 전송 받음
+    2. Spring이 createMemberForm.html의 form 태그 내부에서 input 태그의 name="name"이
+        MemberForm form의 멤버변수명 name과 같으므로 MemberForm form에
+        name="name"인 input 태그의 value를 MemberForm form 넣어준다.
+     */
+    @PostMapping("/members/new")
+    public String create(MemberForm form) {
+        Member member = new Member();
+        member.setName(form.getName());
+
+        memberService.join(member);
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/members")
+    public String list(Model model) {
+        List<Member> members = memberService.findMember();
+        model.addAttribute("members", members);
+        return "members/memberList";
+    }
 }
