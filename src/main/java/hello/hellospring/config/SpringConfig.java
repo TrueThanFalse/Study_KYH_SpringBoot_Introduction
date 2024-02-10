@@ -1,6 +1,7 @@
 package hello.hellospring.config;
 
 import hello.hellospring.repository.JdbcMemberRepository;
+import hello.hellospring.repository.JdbcTemplateMemberRepository;
 import hello.hellospring.repository.MemberRepository;
 import hello.hellospring.repository.MemoryMemberRepository;
 import hello.hellospring.service.MemberService;
@@ -35,10 +36,14 @@ public class SpringConfig {
     @Bean
     public MemberRepository memberRepository() {
         // return new MemoryMemberRepository();
-        return new JdbcMemberRepository(dataSource);
+
+        // return new JdbcMemberRepository(dataSource);
         // application.properties에서 DB 연결 설정을 하면
         // Spring이 dataSource 객체를 알아서 생성해 준다. 그것을 가져와서
         // JdbcMemberRepository로 변경하면 아주 손쉽게 DB를 교체할 수 있다.
         // => Spring 다형성의 장점 (중요)
+
+        // ※ 스프링 JdbcTemplate
+        return new JdbcTemplateMemberRepository(dataSource);
     }
 }
