@@ -109,11 +109,10 @@ class MemberServiceTest {
         assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
     }
 
-    @Test
-    void findMember() {
-    }
-
-    @Test
-    void findOne() {
-    }
+    /*
+    스프링을 빌드하지 않고 바로 테스트 하는 이런 테스트를 단위 테스트라고 한다.
+    장점 : 테스트가 매우 빠르다.
+    왜? Java 내부에서만 실행되어 Run하면 매우 빠르게 작동된다.
+    => 단위 테스트를 잘 만드는 것이 통합 테스트보다 좋은 테스트가 될 확률이 높다.
+     */
 }

@@ -15,26 +15,34 @@ public class JdbcMemberRepository implements MemberRepository{
     // 순수 JDBC
     // 아주 옛날 방식으로 훗날 필요할 때 찾아보면 된다.
 
-    // DB와 연결하려면 DataSource가 필요함
     private final DataSource dataSource;
+    // DB와 연결하려면 DataSource 객체가 필요함
 
-    // DataSource 생성자 주입
     public JdbcMemberRepository(DataSource dataSource) {
+        // DataSource 생성자 주입
         this.dataSource = dataSource;
     }
     
     @Override
     public Member save(Member member) {
         String sql = "insert into member(name) values(?)";
+
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            // RETURN_GENERATED_KEYS : DB에서 자동으로 생성하는 id 값 가져오기
+
             pstmt.setString(1, member.getName());
+
             pstmt.executeUpdate();
+            // executeUpdate() : 실제 쿼리문이 DB에 전송되는 메서드
             rs = pstmt.getGeneratedKeys();
+            // id 값 가져오기
+
             if (rs.next()) {
                 member.setId(rs.getLong(1));
             } else {
@@ -45,20 +53,25 @@ public class JdbcMemberRepository implements MemberRepository{
             throw new IllegalStateException(e);
         } finally {
             close(conn, pstmt, rs);
+            // 변수 릴리즈
         }
     }
 
     @Override
     public Optional<Member> findById(Long id) {
         String sql = "select * from member where id = ?";
+
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, id);
+
             rs = pstmt.executeQuery();
+
             if(rs.next()) {
                 Member member = new Member();
                 member.setId(rs.getLong("id"));
@@ -77,13 +90,17 @@ public class JdbcMemberRepository implements MemberRepository{
     @Override
     public List<Member> findAll() {
         String sql = "select * from member";
+
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
+
             rs = pstmt.executeQuery();
+
             List<Member> members = new ArrayList<>();
             while(rs.next()) {
                 Member member = new Member();
@@ -91,6 +108,7 @@ public class JdbcMemberRepository implements MemberRepository{
                 member.setName(rs.getString("name"));
                 members.add(member);
             }
+
             return members;
         } catch (Exception e) {
             throw new IllegalStateException(e);
@@ -102,14 +120,18 @@ public class JdbcMemberRepository implements MemberRepository{
     @Override
     public Optional<Member> findByName(String name) {
         String sql = "select * from member where name = ?";
+
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+
         try {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, name);
+
             rs = pstmt.executeQuery();
+            
             if(rs.next()) {
                 Member member = new Member();
                 member.setId(rs.getLong("id"));
@@ -126,6 +148,7 @@ public class JdbcMemberRepository implements MemberRepository{
 
     private Connection getConnection() {
         return DataSourceUtils.getConnection(dataSource);
+        // 커넥션을 가져올 때는 DataSourceUtils를 통해서 가져와야 함
     }
     
     private void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
@@ -153,5 +176,6 @@ public class JdbcMemberRepository implements MemberRepository{
     }
     private void close(Connection conn) throws SQLException {
         DataSourceUtils.releaseConnection(conn, dataSource);
+        // 닫을 때도 DataSourceUtils 통해서 릴리즈 한다.
     }
 }
