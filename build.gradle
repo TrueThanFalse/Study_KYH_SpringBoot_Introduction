@@ -23,9 +23,14 @@ dependencies {
 	/* 여기부터 개발자가 직접 추가한 Library */
 
 	// JDBC : Java는 DB와 연동될려면 반드시 JDBC가 필요함
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	// => JPA 사용을 위해서 주석 처리
+	// implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
 	// h2 클라이언트를 사용하기 위한 라이브러리 연결
 	runtimeOnly 'com.h2database:h2'
+
+	// JPA 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
 tasks.named('test') {

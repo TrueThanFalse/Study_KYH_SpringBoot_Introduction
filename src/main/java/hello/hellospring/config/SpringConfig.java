@@ -1,10 +1,8 @@
 package hello.hellospring.config;
 
-import hello.hellospring.repository.JdbcMemberRepository;
-import hello.hellospring.repository.JdbcTemplateMemberRepository;
-import hello.hellospring.repository.MemberRepository;
-import hello.hellospring.repository.MemoryMemberRepository;
+import hello.hellospring.repository.*;
 import hello.hellospring.service.MemberService;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +24,19 @@ public class SpringConfig {
     // Spring이 실행되면 즉시 Bean 등록 가능
     // 참고 : Controller는 컴포넌트 스캔 방식으로 해야 된다.
 
+    /* ※ JPA 사용을 위해 주석 처리
     @Autowired DataSource dataSource;
+    
+    @Autowired
+    public SpringConfig(DataSource dataSource) { this.dataSource = dataSource; }
+     */
+
+    // ※ JPS 사용을 위해 EntityManager 객체 생성 및 DI
+    private EntityManager em;
+
+    public SpringConfig(EntityManager em) {
+        this.em = em;
+    }
 
     @Bean
     public MemberService memberService() {
@@ -44,6 +54,9 @@ public class SpringConfig {
         // => Spring 다형성의 장점 (중요)
 
         // ※ 스프링 JdbcTemplate
-        return new JdbcTemplateMemberRepository(dataSource);
+        // return new JdbcTemplateMemberRepository(dataSource);
+
+        // ※ JPA
+        return new JpaMemberRepository(em);
     }
 }
