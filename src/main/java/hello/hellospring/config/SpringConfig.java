@@ -32,17 +32,28 @@ public class SpringConfig {
      */
 
     // ※ JPS 사용을 위해 EntityManager 객체 생성 및 DI
+    /*
     private EntityManager em;
 
     public SpringConfig(EntityManager em) {
         this.em = em;
     }
+     */
+
+    // ※ 스프링 데이터 JPA 사용
+    private final MemberRepository memberRepository;
+
+    @Autowired
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository());
+        return new MemberService(memberRepository);
     }
 
+    /*
     @Bean
     public MemberRepository memberRepository() {
         // return new MemoryMemberRepository();
@@ -57,6 +68,7 @@ public class SpringConfig {
         // return new JdbcTemplateMemberRepository(dataSource);
 
         // ※ JPA
-        return new JpaMemberRepository(em);
+        // return new JpaMemberRepository(em);
     }
+     */
 }
