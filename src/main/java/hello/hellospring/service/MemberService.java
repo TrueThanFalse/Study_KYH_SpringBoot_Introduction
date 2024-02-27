@@ -55,10 +55,21 @@ public class MemberService {
         단축키 : Ctrl+Alt+M
          */
 
-        validateDuplicateMember(member); // 이름 중복 회원 검증
+        // ※AOP
+        // 메소드의 시간을 체크하는 상황 -> 공통 관심 사항
+        long start = System.currentTimeMillis();
 
-        memberRepository.save(member);
-        return member.getId();
+        try {
+            validateDuplicateMember(member); // 이름 중복 회원 검증
+
+            memberRepository.save(member);
+            return member.getId();
+        } finally {
+            long finish = System.currentTimeMillis();
+            long timeMs = finish - start;
+            System.out.println("join = " + timeMs + "ms");
+        }
+        // 핵심 관심 사항과 공통 관심 사항의 로직이 섞여있으면 유지보수가 어렵다.
     }
 
     // Ctrl+Alt+M 단축키로 추출되어 생성된 Method
